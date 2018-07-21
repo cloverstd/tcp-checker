@@ -1,4 +1,6 @@
-# A tcp chcker
+# A tcp checker
+
+[![Build Status](https://travis-ci.com/cloverstd/tcp-checker.svg?branch=master)](https://travis-ci.com/cloverstd/tcp-checker)
 
 # Install
 
