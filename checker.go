@@ -132,7 +132,8 @@ func (checker *Checker) AddRef(addr string) {
 
 // UnRef the addr from checker.
 func (checker *Checker) UnRef(addr string) {
-	checker.RLock()
+	checker.Lock()
+	defer checker.Unlock()
 	host, exist := checker.bucket[addr]
 	if exist {
 		host.refCountMutex.Lock()
@@ -144,7 +145,6 @@ func (checker *Checker) UnRef(addr string) {
 		host.refCountMutex.Unlock()
 		return
 	}
-	checker.RUnlock()
 }
 
 // New returned the Checker with option.
