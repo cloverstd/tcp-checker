@@ -1,7 +1,6 @@
 package tcpchecker
 
 import (
-	"log"
 	"sync"
 	"time"
 
@@ -35,27 +34,25 @@ func (host *Host) worker() {
 	timer := time.NewTimer(host.checker.option.Interval)
 	defer timer.Stop()
 	var (
-		fall       = host.checker.option.Fall
-		rise       = host.checker.option.Rise
-		prevStatus = host.checker.option.DefaultDown
+		fall = host.checker.option.Fall
+		rise = host.checker.option.Rise
 	)
 	check := func() {
 		err := host.checker.shaker.CheckAddr(host.addr, host.checker.option.Timeout)
 		if err != nil {
 			fall--
-			if !prevStatus && fall == 0 {
-				log.Println(err)
+			if fall == 0 {
 				host.down.Set()
 				fall = host.checker.option.Fall
-			}
-			prevStatus = false
-		} else {
-			rise--
-			if prevStatus && rise == 0 {
-				host.down.UnSet()
 				rise = host.checker.option.Rise
 			}
-			prevStatus = true
+		} else {
+			rise--
+			if rise == 0 {
+				host.down.UnSet()
+				rise = host.checker.option.Rise
+				fall = host.checker.option.Fall
+			}
 		}
 	}
 	check()
